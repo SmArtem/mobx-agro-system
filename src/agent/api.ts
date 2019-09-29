@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { FeatureCollection } from 'geojson';
-import { IGroup, IRespondedLayer } from '../types';
+import { any } from 'prop-types';
+import { IGroup, IRespondedLayer, IUser } from '../types';
 
 export default class Api {
   private client: AxiosInstance;
@@ -62,6 +63,13 @@ export default class Api {
     );
   }
 
+  public async auth() {
+    return this.client.get('/auth').then(({ data }) => {
+      const { user, authenticated } = data;
+      return { user, authenticated } as { user: IUser; authenticated: boolean };
+    });
+  }
+
   public async login({ login, password }: { login: string; password: string }) {
     return this.client.post('/auth/token', { login, password }).then(({ data }) => {
       this.token = data.token;
@@ -102,12 +110,12 @@ export default class Api {
     const { info } = layer;
     const url = '/wfs';
     const params = {
-      service: 'wfs' || info.service,
-      version: '1.1.0',
       outputFormat: 'application/json',
-      typeName: info.typeName,
+      request: 'GetFeature',
+      service: 'wfs' || info.service,
       srsName: 'EPSG:4326',
-      request: 'GetFeature'
+      typeName: info.typeName,
+      version: '1.1.0'
     };
     const { data } = await this.client.get(url, { params });
     return data as FeatureCollection;

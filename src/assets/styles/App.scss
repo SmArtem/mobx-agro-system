@@ -32,15 +32,17 @@ code {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 200px;
+  width: 300px;
   pointer-events: none;
   & > * {
     pointer-events: all;
+    overflow-y: auto;
   }
 }
 .left-side {
   left: 0;
   right: auto;
+  width: 400px;
 }
 .rigth-side {
   right: 0;

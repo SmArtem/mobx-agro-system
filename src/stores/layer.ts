@@ -4,7 +4,7 @@ import { action, observable } from 'mobx';
 import agent from '../agent';
 import { ILayer, ILayerField, ILayerInfo, IRespondedLayer } from '../types';
 
-export class Layer implements ILayer {
+export default class Layer implements ILayerClass {
   @observable public isLoading = false;
   @observable public errors: AxiosResponse | undefined = undefined;
   public id: number;

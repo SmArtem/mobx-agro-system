@@ -6,14 +6,14 @@ import Group from './group';
 export default class Groups {
   @observable public isLoading = false;
   @observable public errors: AxiosResponse | undefined = undefined;
-  @observable private groups = new Map<number, Group>();
+  @observable private groups: Group[] = [];
 
   constructor() {
     this.getGroups();
   }
 
   @computed
-  get map() {
+  get list() {
     return this.groups;
   }
   @action.bound public getGroups() {
@@ -22,7 +22,7 @@ export default class Groups {
     return agent
       .getGroups()
       .then(groups => {
-        groups.forEach(group => this.map.set(group.id, new Group(group)));
+        this.groups = groups.map(group => new Group(group));
       })
       .catch(
         action((error: AxiosError) => {

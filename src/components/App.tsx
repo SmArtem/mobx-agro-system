@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { Header } from '../components/Header';
+import AppMap from './Map';
 
 import { About } from './About';
 import { Home } from './Home';
 const TheRouter: React.FC = () => (
   <Router>
     <div>
+      <AppMap />
       <div className="sidebar left-side">
         <Route path="/about" component={About} />
         <Route path="/" component={Home} />

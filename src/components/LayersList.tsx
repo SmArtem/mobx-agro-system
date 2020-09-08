@@ -5,35 +5,31 @@ import { Accordion, Icon, List } from 'semantic-ui-react';
 import layersStore from '../stores/layersStore';
 import LayersListItem from './LayersListItem';
 
-const LayersList: React.FC = observer(() => {
-  const grouped = layersStore.grouped;
-  // tslint:disable-next-line: react-hooks-nesting
-  const [selected, setSelected] = useState<number[]>([]);
-  const handleClick = (id: number) =>
-    setSelected(selected.includes(id) ? selected.filter(n => n !== id) : selected.concat(id));
-  return (
-    <Accordion styled>
-      {grouped.map(group => (
+const LayersList: React.FC = observer(() => (
+  <Accordion styled style={{ maxHeight: '60%', overflow: 'auto' }}>
+    {layersStore.grouped.map(n => {
+      const { group, ids } = n;
+      return (
         <div key={group.id.toString()}>
-          <Accordion.Title active={selected.includes(group.id)} index={0} onClick={() => handleClick(group.id)}>
+          <Accordion.Title active={group.open} index={0} onClick={() => group.toggle()}>
             <Icon name="dropdown" />
             {group.name}
           </Accordion.Title>
-          <Accordion.Content active={selected.includes(group.id)}>
-            {group.layers.map(layer => (
-              <List divided celled verticalAlign="middle" key={layer.id.toString()}>
+          <Accordion.Content active={group.open}>
+            {ids.map(id => (
+              <List divided celled verticalAlign="middle" key={id.toString()}>
                 <List.Item>
                   <List.Content>
-                    <LayersListItem layer={layer} />
+                    <LayersListItem id={id} />
                   </List.Content>
                 </List.Item>
               </List>
             ))}
           </Accordion.Content>
         </div>
-      ))}
-    </Accordion>
-  );
-});
+      );
+    })}
+  </Accordion>
+));
 
 export default LayersList;

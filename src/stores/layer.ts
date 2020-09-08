@@ -1,8 +1,9 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { FeatureCollection } from 'geojson';
 import { action, observable } from 'mobx';
+import xml2js from 'xml2js';
 import agent from '../agent';
-import { ILayer, ILayerField, ILayerInfo, IRespondedLayer } from '../types';
+import { ILayer, ILayerClass, ILayerField, ILayerInfo } from '../types';
 
 export default class Layer implements ILayerClass {
   @observable public isLoading = false;
@@ -14,10 +15,11 @@ export default class Layer implements ILayerClass {
   public fields: ILayerField;
   public groupId: number;
   public order: number;
-  @observable public featureCollection: FeatureCollection | null = null;
-  private RespondedLayer: IRespondedLayer;
+  @observable.struct public featureCollection: FeatureCollection | null = null;
+  public style = null;
+  private RespondedLayer: ILayer;
 
-  constructor(RespondedLayer: IRespondedLayer) {
+  constructor(RespondedLayer: ILayer) {
     this.id = RespondedLayer.id;
     this.name = RespondedLayer.name;
     this.info = RespondedLayer.info;
@@ -36,6 +38,7 @@ export default class Layer implements ILayerClass {
       .getLayer(this.RespondedLayer)
       .then(featureCollection => {
         this.featureCollection = featureCollection;
+        this.getStyle(this.id);
       })
       .catch(
         action((error: AxiosError) => {
@@ -48,5 +51,19 @@ export default class Layer implements ILayerClass {
           this.isLoading = false;
         })
       );
+  }
+  @action.bound private getStyle(id: number) {
+    agent.getStyle(id).then(style => {
+      console.log(style);
+      // const parser = new xml2js.Parser({ trim: true, normalize: true, mergeAttrs: true, charkey: 'val' });
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(style.styleSld, 'application/xml');
+      // const xml = style.styleSld || null;
+      console.log(xml);
+      // parser.parseString(xml, (err: any, result: any) => {
+      //   console.log(err, result);
+      // });
+      this.style = style;
+    });
   }
 }

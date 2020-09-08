@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { FeatureCollection } from 'geojson';
-import { any } from 'prop-types';
-import { IGroup, IRespondedLayer, IUser } from '../types';
+import { IGroup, IUser } from '../types';
+import { IRespondedLayer } from '../types/api';
 
 export default class Api {
   private client: AxiosInstance;
@@ -119,5 +119,9 @@ export default class Api {
     };
     const { data } = await this.client.get(url, { params });
     return data as FeatureCollection;
+  }
+  public async getStyle(id: number) {
+    const { data } = await this.client.get(`/layers/${id}/style`);
+    return data && data.style;
   }
 }

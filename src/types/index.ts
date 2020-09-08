@@ -23,15 +23,7 @@ export interface ILayerInfo {
   poly: false;
   requestUrl: string;
 }
-export interface IRespondedLayer {
-  id: number;
-  name: string;
-  info: ILayerInfo;
-  isEditable: boolean;
-  fields: ILayerField;
-  groupId: number;
-  order: number;
-}
+
 export interface ILayer {
   id: number;
   name: string;
@@ -40,7 +32,17 @@ export interface ILayer {
   fields: ILayerField;
   groupId: number;
   order: number;
+}
+export interface ILayerClass {
+  id: number;
+  name: string;
+  info: ILayerInfo;
+  isEditable: boolean;
+  fields: ILayerField;
+  groupId: number;
+  order: number;
   isLoading: boolean;
+  featureCollection: FeatureCollection | null;
   getLayer: () => void;
   // getLayer: () => Promise<FeatureCollection<Geometry, GeoJsonProperties>>;
 }

@@ -1,13 +1,17 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Button, Icon } from 'semantic-ui-react';
-import { ILayer } from '../types';
+import layersStore from '../stores/layersStore';
 
 interface IProps {
-  layer: ILayer;
+  id: number;
 }
 
-const LayersListItem: React.FC<IProps> = observer(({ layer }) => {
+const LayersListItem = observer(({ id }: IProps) => {
+  const layer = layersStore.layersRegistry.get(id);
+  if (!layer) {
+    return null;
+  }
   return (
     <div>
       {layer.id}
@@ -17,4 +21,5 @@ const LayersListItem: React.FC<IProps> = observer(({ layer }) => {
     </div>
   );
 });
+
 export default LayersListItem;
